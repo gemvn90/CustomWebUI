@@ -89,6 +89,16 @@ services:
       - redis
       - postgres
 
+  prometheus:
+    image: prom/prometheus:latest
+    container_name: prometheus
+    volumes:
+      - prometheus_data:/prometheus
+      - ./prometheus.yml:/etc/prometheus/prometheus.yml:ro
+    networks:
+      - docker-net
+    restart: unless-stopped
+
   elasticsearch:
     image: docker.elastic.co/elasticsearch/elasticsearch:7.17.0
     container_name: elasticsearch
@@ -104,14 +114,14 @@ services:
     env_file:
       - .env
     environment:
-      - PG_HOST= ${PTN_PG_HOST}
-      - PG_PORT= ${PTN_PG_PORT}
-      - PG_DATABASE= ${PTN_PG_DATABASE}
-      - PG_USER= ${PTN_PG_USERNAME}
-      - PG_PASSWORD= ${PTN_PG_PASSWORD}
-      - REDIS_HOST= ${PTN_REDIS_HOST}
-      - REDIS_PORT= ${PTN_REDIS_PORT}
-      - REDIS_PASSWORD= ${PTN_REDIS_PASSWORD}
+      PG_HOST: ${PTN_PG_HOST}
+      PG_PORT: ${PTN_PG_PORT}
+      PG_DATABASE: ${PTN_PG_DATABASE}
+      PG_USER: ${PTN_PG_USERNAME}
+      PG_PASSWORD: ${PTN_PG_PASSWORD}
+      REDIS_HOST: ${PTN_REDIS_HOST}
+      REDIS_PORT: ${PTN_REDIS_PORT}
+      REDIS_PASSWORD: ${PTN_REDIS_PASSWORD}
     volumes:
       - portainer_data:/data
       - /var/run/docker.sock:/var/run/docker.sock
